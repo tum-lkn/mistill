@@ -1,0 +1,50 @@
+FROM pytorch/pytorch
+RUN apt-get update && apt-get install -y  python3-dev \
+                        build-essential \
+                        automake \
+                        bison \
+                        libtool \
+                        byacc \
+                        swig \
+                        pkg-config \
+                        g++ \
+                        gcc \
+                        wget \
+                        libgtk-3-dev \
+                        libcairo2-dev \
+                        ghostscript \
+                        expat \
+                        libpng-dev \
+                        zlib1g-dev \
+                        libgts-dev \
+                        libperl-dev \
+                        rsync \
+                        vim \
+                        tmux
+RUN python -m pip install --upgrade pip setuptools wheel
+RUN python -m pip install --upgrade tables \
+                    scipy \
+                    matplotlib \
+                    jupyter \
+                    pandas \
+                    sympy \
+                    nose \
+                    networkx \
+                    ray \
+                    h5py \
+                    tabulate \
+                    sklearn
+# For some reason has to be installed separately
+RUN python -m pip install --upgrade ray[tune]
+
+RUN wget https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/2.49.0/graphviz-2.49.0.tar.gz
+RUN tar -xzvf graphviz-2.49.0.tar.gz
+RUN cd graphviz-2.49.0 && ./configure && make && make install
+
+RUN python -m pip install --upgrade pygraphviz
+RUN python -m pip install --upgrade sparsemax
+
+RUN groupadd -g 1012 student
+RUN useradd -m -u 1000 -g 1012 -s /bin/bash developer
+USER developer
+
